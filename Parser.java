@@ -11,7 +11,7 @@ class Parser {
   private static class ParseError extends RuntimeException {}
   Expr parse() {
     try {
-      return expression();
+      return CommaExpression();
     } catch (ParseError error) {
       return null;
     }
@@ -23,7 +23,13 @@ class Parser {
   Parser(List<Token> tokens) {
     this.tokens = tokens;
   }
-
+  private Expr CommaExpression(){
+    Expr expr = expression();
+    while(match(COMMA)){
+      expr = expression();
+    }
+    return expr;
+  }
   private Expr expression(){
     return equality();
   }
@@ -35,10 +41,13 @@ class Parser {
       expr = new Expr.Binary(expr, operator, right);
     }
 
+
     return expr;
   }
-
   private Expr comparison(){
+//    if(match(Quest)){
+//
+//    }
     Expr expr = term();
     while(match(GREATER,GREATER_EQUAL,LESS,LESS_EQUAL)){
       Token operator = previous();

@@ -91,7 +91,8 @@ class Scanner {
       case '-': addToken(MINUS); break;
       case '+': addToken(PLUS); break;
       case ';': addToken(SEMICOLON); break;
-      case '*': addToken(STAR); break; 
+      case '*': addToken(STAR); break;
+      case '?': addToken(Quest); break;
       case '/':
       if (match('/')) {
         // A comment goes until the end of the line.

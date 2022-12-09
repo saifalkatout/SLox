@@ -64,6 +64,7 @@ class Interpreter implements Expr.Visitor<Object> {
         switch (expr.operator.type) {
             case BANG_EQUAL: return !isEqual(left, right);
             case EQUAL_EQUAL: return isEqual(left, right);
+            case COMMA: return right;
             case GREATER:
                 checkNumberOperands(expr.operator, left, right);
                 return (double)left > (double)right;
@@ -90,18 +91,19 @@ class Interpreter implements Expr.Visitor<Object> {
                     return (double)left + (double)right;
                 }
 
-                if (left instanceof String && right instanceof String) {
+
+                //CHALLENGE 2
+                if (left instanceof String || right instanceof String) {
                     return (String)left + (String)right;
                 }
 
-                //CHALLENGE 2
-                if (left instanceof String && right instanceof Double) {
-                    String text = right.toString();
-                    if (right.toString().endsWith(".0")) {
-                        text = text.substring(0, text.length() - 2);
-                    }
-                    return (String)left + text;
-                }
+//                if (left instanceof String && right instanceof Double) {
+//                    String text = right.toString();
+//                    if (right.toString().endsWith(".0")) {
+//                        text = text.substring(0, text.length() - 2);
+//                    }
+//                    return (String)left + text;
+//                }
                 throw new RuntimeError(expr.operator,
                         "Operands must be two numbers or two strings.");
             default:
@@ -126,7 +128,6 @@ class Interpreter implements Expr.Visitor<Object> {
     private void checkNumberOperands(Token operator,
                                      Object left, Object right) {
         if (left instanceof Double && right instanceof Double) return;
-
         throw new RuntimeError(operator, "Operands must be numbers.");
     }
 

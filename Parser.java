@@ -26,7 +26,9 @@ class Parser {
   private Expr CommaExpression(){
     Expr expr = expression();
     while(match(COMMA)){
-      expr = expression();
+      Token operator = previous();
+      Expr right = expression();
+      expr = new Expr.Binary(expr, operator, right);
     }
     return expr;
   }
@@ -85,7 +87,7 @@ class Parser {
     while (match(SLASH, STAR)) {
       Token operator = previous();
       Expr right = Unary();
-      expr = new Unary.Binary(expr, operator, right);
+      expr = new Expr.Binary(expr, operator, right);
     }
 
     return expr;
@@ -110,9 +112,13 @@ class Parser {
     }
 
     if (match(LEFT_PAREN)) {
-      Expr expr = expression();
+      Expr expr = CommaExpression();
       consume(RIGHT_PAREN, "Expect ')' after expression.");
       return new Expr.Grouping(expr);
+    }
+
+    if(match(SLASH, STAR, PLUS, GREATER,GREATER_EQUAL,LESS,LESS_EQUAL)){
+      throw error(previous(),"Where is left operand ?!");
     }
     throw error(peek(), "Expect expression.");
   }

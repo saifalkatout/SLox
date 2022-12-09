@@ -52,7 +52,7 @@ public class lox {
     Scanner scanner = new Scanner(source);
     List<Token> tokens = scanner.scanTokens();
     Parser parser = new Parser(tokens);
-    Expr expression = p1 arser.parse();
+    Expr expression = parser.parse();
     // Stop if there was a syntax error.
     if (hadError) return;
     interpreter.interpret(expression);

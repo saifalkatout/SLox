@@ -24,6 +24,7 @@ public class lox {
     } else {
       runPrompt();
     }
+
   }
   private static void runFile(String path) throws IOException {
     byte[] bytes = Files.readAllBytes(Paths.get(path));
@@ -36,7 +37,6 @@ public class lox {
     private static void runPrompt() throws IOException {
         InputStreamReader input = new InputStreamReader(System.in);
         BufferedReader reader = new BufferedReader(input);
-    
         for (;;) { 
           System.out.print("> ");
           String line = reader.readLine();
@@ -52,12 +52,12 @@ public class lox {
     Scanner scanner = new Scanner(source);
     List<Token> tokens = scanner.scanTokens();
     Parser parser = new Parser(tokens);
-    Expr expression = parser.parse();
+    List<Stmt> expressions = parser.parse();
     // Stop if there was a syntax error.
     if (hadError) return;
-    interpreter.interpret(expression);
+    interpreter.interpret(expressions);
 
-    //System.out.println(new AstPrinter().print(expression));
+    //System.out.println(new AstPrinter().print(expressions));
 }
   private static void report(int line, String where,
   String message) {

@@ -48,9 +48,30 @@ class Parser {
     return new Stmt.Var(name, initializer);
   }
   private Stmt statement() {
+    if(match(WHILE)) return whileStatement();
+    if(match(IF)) return ifStatement();
     if (match(PRINT)) return printStatement();
     if (match(LEFT_BRACE)) return new Stmt.Block(block());
     return expressionStatement();
+  }
+  private Stmt whileStatement() {
+    consume(LEFT_PAREN, "Expect '(' after 'while'.");
+    Expr condition = expression();
+    consume(RIGHT_PAREN, "Expect ')' after condition.");
+    Stmt body = statement();
+
+    return new Stmt.While(condition, body);
+  }
+  private Stmt ifStatement() {
+    consume(LEFT_PAREN, "expected '(' after 'if'.");
+    Expr condition = expression();
+    consume(RIGHT_PAREN, "expected ')' at end of if condition.");
+    Stmt thenbranch = statement();
+    Stmt elsebranch = null;
+    if(match(ELSE)){
+      elsebranch = statement();
+    }
+    return new Stmt.If(condition,thenbranch,elsebranch);
   }
   private Stmt printStatement() {
     Expr value = expression();
@@ -84,10 +105,32 @@ class Parser {
     return expr;
   }
   private Expr expression(){
-    return assignment();
+    return or();
+    //return assignment();
     // return equality();
   }
+  private Expr or() {
+    Expr expr = and();
 
+    while (match(OR)) {
+      Token operator = previous();
+      Expr right = and();
+      expr = new Expr.Logical(expr, operator, right);
+    }
+
+    return expr;
+  }
+  private Expr and() {
+    Expr expr = equality();
+
+    while (match(AND)) {
+      Token operator = previous();
+      Expr right = equality();
+      expr = new Expr.Logical(expr, operator, right);
+    }
+
+    return expr;
+  }
   private Expr assignment() {
     Expr expr = equality();
 

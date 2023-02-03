@@ -1,11 +1,12 @@
-package com.craftinginterpreters.lox;
+package SLox;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.craftinginterpreters.lox.TokenType.*; 
+import static SLox.TokenType.*;
+
 
 class Scanner {
   private final String source;
@@ -35,6 +36,8 @@ class Scanner {
     keywords.put("true",   TRUE);
     keywords.put("var",    VAR);
     keywords.put("while",  WHILE);
+    keywords.put("break",  BREAK);
+
   }
 
   Scanner(String source) {

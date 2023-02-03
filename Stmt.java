@@ -1,13 +1,14 @@
-package com.craftinginterpreters.lox;
+package SLox;
 import java.util.List;
 abstract class Stmt {
     interface Visitor<R> {
-        R visitPrintStmt(com.craftinginterpreters.lox.Stmt.Print expr);
-        R visitExpressionStmt(com.craftinginterpreters.lox.Stmt.Expression expr);
+        R visitPrintStmt(Print expr);
+        R visitExpressionStmt(Expression expr);
         R visitBlockStmt(Block stmt);
         R visitIfStmt(If stmt);
         R visitWhileStmt(While stmt);
         R visitVarStmt(Var stmt);
+        R visitFunctionStmt(Function stmt);
 
     }
   static class Print extends Stmt {
@@ -16,7 +17,7 @@ abstract class Stmt {
 }
     final Expr expression;
     @Override
-    <R> R accept(com.craftinginterpreters.lox.Stmt.Visitor<R> visitor) {
+    <R> R accept(Visitor<R> visitor) {
           return visitor.visitPrintStmt(this);
       }
 }
@@ -26,7 +27,7 @@ abstract class Stmt {
 }
     final Expr expression;
     @Override
-    <R> R accept(com.craftinginterpreters.lox.Stmt.Visitor<R> visitor) {
+    <R> R accept(Visitor<R> visitor) {
           return visitor.visitExpressionStmt(this);
       }
 
@@ -88,6 +89,23 @@ abstract class Stmt {
         final Expr condition;
         final Stmt body;
     }
-    abstract <R> R accept(com.craftinginterpreters.lox.Stmt.Visitor<R> visitor);
+
+    static class Function extends Stmt {
+        Function(Token name, List<Token> params, List<Stmt> body) {
+            this.name = name;
+            this.params = params;
+            this.body = body;
+        }
+
+        @Override
+        <R> R accept(Visitor<R> visitor) {
+            return visitor.visitFunctionStmt(this);
+        }
+
+        final Token name;
+        final List<Token> params;
+        final List<Stmt> body;
+    }
+    abstract <R> R accept(Visitor<R> visitor);
 
 }

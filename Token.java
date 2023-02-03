@@ -1,5 +1,5 @@
 //> Scanning token-class
-package com.craftinginterpreters.lox;
+package SLox;
 
 class Token {
   final TokenType type;

@@ -1,4 +1,4 @@
-package com.craftinginterpreters.lox;
+package SLox;
 
 import java.util.List;
 
@@ -11,6 +11,9 @@ abstract class Expr {
     R visitLogicalExpr(Logical expr);
     R visitVariableExpr(Variable expr);
     R visitAssignExpr(Assign expr);
+    R visitCallExpr(Call expr);
+
+    //R visitBreakExpr(Break expr);
   }
   abstract <R> R accept(Visitor<R> visitor);
   static class Binary extends Expr {
@@ -111,4 +114,26 @@ abstract class Expr {
     final Token operator;
     final Expr right;
   }
+
+  static class Call extends Expr {
+    Call(Expr callee, Token paren, List<Expr> arguments) {
+      this.callee = callee;
+      this.paren = paren;
+      this.arguments = arguments;
+    }
+
+    @Override
+    <R> R accept(Visitor<R> visitor) {
+      return visitor.visitCallExpr(this);
+    }
+
+    final Expr callee;
+    final Token paren;
+    final List<Expr> arguments;
+  }
+
+//  static class Break extends Expr {
+//    @Override
+//    <R> R accept (Visitor<R> visitor) { return visitor.visitBreakExpr(this);}
+//  }
 }

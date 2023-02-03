@@ -1,4 +1,4 @@
-package com.craftinginterpreters.lox;
+package SLox;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -28,7 +28,7 @@ public class lox {
   }
   private static void runFile(String path) throws IOException {
     byte[] bytes = Files.readAllBytes(Paths.get(path));
-    run(new String(bytes, Charset.defaultCharset()));
+    run(new String(bytes, Charset.defaultCharset()),false);
 
     if (hadError) System.exit(65);
     if (hadRuntimeError) System.exit(70);
@@ -41,21 +41,21 @@ public class lox {
           System.out.print("> ");
           String line = reader.readLine();
           if (line == null) break;
-          run(line);
+          run(line, true);
           hadError = false;
         }
 
         // Indicate an error in the exit code.
    
     }
-  private static void run(String source) {
+  private static void run(String source, boolean isR) {
     Scanner scanner = new Scanner(source);
     List<Token> tokens = scanner.scanTokens();
     Parser parser = new Parser(tokens);
     List<Stmt> expressions = parser.parse();
     // Stop if there was a syntax error.
     if (hadError) return;
-    interpreter.interpret(expressions);
+    interpreter.interpret(expressions,isR);
 
     //System.out.println(new AstPrinter().print(expressions));
 }

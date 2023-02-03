@@ -1,4 +1,4 @@
-package com.craftinginterpreters.lox;
+package SLox;
 import java.util.List;
 abstract class Test {
   static class Binary extends Test {

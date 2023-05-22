@@ -1,7 +1,7 @@
 fun scope(a) {
-  a = "local";
-  print a;
+
+  var a = "local";
+
 }
 
-
-scope("Sloggy");
+scope(1);

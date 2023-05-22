@@ -76,6 +76,7 @@ class Parser {
     if (match(IF)) return ifStatement();
     if (match(PRINT)) return printStatement();
     if (match(LEFT_BRACE)) return new Stmt.Block(block());
+    if(match(RETURN)) return returnStatement();
     return expressionStatement();
   }
 
@@ -328,6 +329,19 @@ class Parser {
 
     return new Expr.Call(callee, paren, arguments);
   }
+
+  private Stmt returnStatement() {
+    Token keyword = previous();
+    Expr value = null;
+    if (!check(SEMICOLON)) {
+      value = expression();
+    }
+
+    consume(SEMICOLON, "Expect ';' after return value.");
+    return new Stmt.Return(keyword, value);
+  }
+
+
   private Token consume(TokenType type, String message) {
     if (check(type)) return advance();
 

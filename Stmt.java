@@ -3,7 +3,7 @@ import java.util.List;
 abstract class Stmt {
     interface Visitor<R> {
         R visitPrintStmt(Print expr);
-        R visitExpressionStmt(Expression expr);
+        R visitExpressionStmt(Expression stmt);
         R visitBlockStmt(Block stmt);
         R visitIfStmt(If stmt);
         R visitWhileStmt(While stmt);

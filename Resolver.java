@@ -1,11 +1,10 @@
 package SLox;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Stack;
+import java.sql.Statement;
+import java.util.*;
 
 class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
+    public final ArrayList<Token> visited = new ArrayList<>();
     private final Interpreter interpreter;
     private final Stack<Map<String, Boolean>> scopes = new Stack<>();
     private FunctionType currentFunction = FunctionType.NONE;
@@ -19,7 +18,8 @@ class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
         NONE,
         FUNCTION,
         METHOD,
-        INITIALIZER
+        INITIALIZER,
+        LAMBDA
     }
     private enum ClassType {
         NONE,
@@ -50,7 +50,7 @@ class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
             lox.error(expr.name,
                     "Can't read local variable in its own initializer.");
         }
-
+        visited.removeIf(obj -> Objects.equals(obj.lexeme, expr.name.lexeme));
         resolveLocal(expr, expr.name);
         return null;
     }
@@ -132,7 +132,6 @@ class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
     @Override
     public Void visitCallExpr(Expr.Call expr) {
         resolve(expr.callee);
-
         for (Expr argument : expr.arguments) {
             resolve(argument);
         }
@@ -208,6 +207,21 @@ class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
         return null;
     }
 
+    @Override
+    public Void visitLambdaExpr(Expr.Lambda expr) {
+        FunctionType enclosingFunction = currentFunction;
+        currentFunction = FunctionType.LAMBDA;
+
+        beginScope();
+        for (Token param : expr.params) {
+            declare(param);
+            define(param);
+        }
+        resolve(expr.body);
+        endScope();
+        currentFunction = enclosingFunction;
+        return null;
+    }
 
 
     private void resolveLocal(Expr expr, Token name) {
@@ -227,6 +241,7 @@ class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
         scopes.pop();
     }
     private void declare(Token name) {
+        visited.add(name);
         if (scopes.isEmpty()) return;
 
         Map<String, Boolean> scope = scopes.peek();

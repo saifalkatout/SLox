@@ -57,12 +57,20 @@ public class lox {
     if (hadError) return;
     Resolver resolver = new Resolver(interpreter);
     resolver.resolve(statements);
+    checkVisitedVariables(resolver);
     // Stop if there was a resolution error.
     if (hadError) return;
     interpreter.interpret(statements,isR);
 
     //System.out.println(new AstPrinter().print(expressions));
 }
+  private static void checkVisitedVariables(Resolver resolver){
+
+    if(!resolver.visited.isEmpty())
+      lox.error(resolver.visited.get(0),
+              "Variable is defined but never used.");
+  }
+
   private static void report(int line, String where,
   String message) {
   System.err.println(

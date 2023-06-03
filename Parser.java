@@ -25,7 +25,7 @@ class Parser {
   }
   private Stmt declaration() {
     try {
-      //if (match(FUN)) return function("function");
+      if (match(FUN) && peek().type == IDENTIFIER) return function("function");
       if (match(VAR)) return varDeclaration();
       return statement();
     } catch (ParseError error) {
@@ -198,7 +198,6 @@ class Parser {
     return expr;
   }
   private Expr expression(){
-    if(match(FUN)) return lambda();
     return assignment();
     // return equality();
   }
@@ -332,6 +331,7 @@ class Parser {
     return expr;
   }
   private Expr primary(){
+    if(match(FUN)) return lambda();
     if (match(FALSE)) return new Expr.Literal(false);
     if (match(TRUE)) return new Expr.Literal(true);
     if (match(NIL)) return new Expr.Literal(null);

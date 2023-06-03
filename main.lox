@@ -1,10 +1,5 @@
-var a = "global";
-{
-  fun showA() {
-    print a;
-  }
-
-  showA();
-  var a = "block";
-  showA();
+fun x(b){
+    return b;
 }
+
+x(1);

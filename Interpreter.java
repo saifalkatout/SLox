@@ -276,6 +276,11 @@ class  Interpreter implements Expr.Visitor<Object>,
     }
 
     @Override
+    public Object visitLambdaExpr(Expr.Lambda expr){
+        return new LoxLambda(expr, environment);
+    }
+
+    @Override
     public Void visitFunctionStmt(Stmt.Function stmt) {
         LoxFunction function = new LoxFunction(stmt, environment, false);
         environment.define(stmt.name.lexeme, function);

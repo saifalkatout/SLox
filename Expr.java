@@ -15,6 +15,7 @@ abstract class Expr {
     R visitGetExpr(Get expr);
     R visitSetExpr(Set expr);
     R visitAnaExpr(Ana expr);
+    R visitLambdaExpr(Lambda expr);
 
     //R visitBreakExpr(Break expr);
   }
@@ -178,6 +179,21 @@ abstract class Expr {
     final Token keyword;
   }
 
+
+  static class Lambda extends Expr {
+    Lambda(List<Token> params, List<Stmt> body) {
+      this.params = params;
+      this.body = body;
+    }
+
+    @Override
+    <R> R accept(Visitor<R> visitor) {
+      return visitor.visitLambdaExpr(this);
+    }
+
+    final List<Token> params;
+    final List<Stmt> body;
+  }
 
 //  static class Break extends Expr {
 //    @Override

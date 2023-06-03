@@ -12,6 +12,9 @@ abstract class Expr {
     R visitVariableExpr(Variable expr);
     R visitAssignExpr(Assign expr);
     R visitCallExpr(Call expr);
+    R visitGetExpr(Get expr);
+    R visitSetExpr(Set expr);
+    R visitAnaExpr(Ana expr);
 
     //R visitBreakExpr(Break expr);
   }
@@ -131,6 +134,50 @@ abstract class Expr {
     final Token paren;
     final List<Expr> arguments;
   }
+  static class Get extends Expr {
+    Get(Expr object, Token name) {
+      this.object = object;
+      this.name = name;
+    }
+
+    @Override
+    <R> R accept(Visitor<R> visitor) {
+      return visitor.visitGetExpr(this);
+    }
+
+    final Expr object;
+    final Token name;
+  }
+
+  static class Set extends Expr {
+    Set(Expr object, Token name, Expr value) {
+      this.object = object;
+      this.name = name;
+      this.value = value;
+    }
+
+    @Override
+    <R> R accept(Visitor<R> visitor) {
+      return visitor.visitSetExpr(this);
+    }
+
+    final Expr object;
+    final Token name;
+    final Expr value;
+  }
+  static class Ana extends Expr {
+    Ana(Token keyword) {
+      this.keyword = keyword;
+    }
+
+    @Override
+    <R> R accept(Visitor<R> visitor) {
+      return visitor.visitAnaExpr(this);
+    }
+
+    final Token keyword;
+  }
+
 
 //  static class Break extends Expr {
 //    @Override

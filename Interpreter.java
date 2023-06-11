@@ -147,7 +147,7 @@ class  Interpreter implements Expr.Visitor<Object>,
 
         Map<String, LoxFunction> methods = new HashMap<>();
         for (Stmt.Function method : stmt.methods) {
-            LoxFunction function = new LoxFunction(method, environment, method.name.lexeme.equals("init"));
+            LoxFunction function = new LoxFunction(method, environment, method.name.lexeme.equals("init"), method.isGetter);
             methods.put(method.name.lexeme, function);
         }
         LoxClass klass = new LoxClass(stmt.name.lexeme, (LoxClass)superclass, methods);
@@ -300,7 +300,7 @@ class  Interpreter implements Expr.Visitor<Object>,
 
     @Override
     public Void visitFunctionStmt(Stmt.Function stmt) {
-        LoxFunction function = new LoxFunction(stmt, environment, false);
+        LoxFunction function = new LoxFunction(stmt, environment, false, stmt.isGetter);
         environment.define(stmt.name.lexeme, function);
         return null;
     }
@@ -308,7 +308,10 @@ class  Interpreter implements Expr.Visitor<Object>,
     public Object visitGetExpr(Expr.Get expr) {
         Object object = evaluate(expr.object);
         if (object instanceof LoxInstance) {
-            return ((LoxInstance) object).get(expr.name);
+            Object member = ((LoxInstance) object).get(expr.name);
+            if(member instanceof LoxFunction && ((LoxFunction) member).GetisGetter()){
+                return ((LoxFunction) member).call(this,new ArrayList<>());}
+            return member;
         }
 
         throw new RuntimeError(expr.name,

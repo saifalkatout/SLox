@@ -34,11 +34,14 @@ class Parser {
     }
   }
   private Stmt.Function function(String kind) {
+    //static function
     if(match(CLASS)) advance();
 
     Token name = consume(IDENTIFIER, "Expect " + kind + " name.");
 
+    if(match(LEFT_BRACE)){ return getterFunction(name); }
     consume(LEFT_PAREN, "Expect '(' after " + kind + " name.");
+
     List<Token> parameters = new ArrayList<>();
     if (!check(RIGHT_PAREN)) {
       do {
@@ -54,7 +57,12 @@ class Parser {
 
     consume(LEFT_BRACE, "Expect '{' before " + kind + " body.");
     List<Stmt> body = block();
-    return new Stmt.Function(name, parameters, body);
+    return new Stmt.Function(name, parameters, body, false);
+  }
+
+  private Stmt.Function getterFunction(Token name){
+    List<Stmt> body = block();
+    return new Stmt.Function(name,new ArrayList<>(),body, true);
   }
   private Stmt varDeclaration() {
     Token name = consume(IDENTIFIER, "Expect variable name.");

@@ -6,10 +6,12 @@ class LoxFunction implements LoxCallable {
     private final Stmt.Function declaration;
     private final Environment closure;
     private final boolean isInitializer;
-    LoxFunction(Stmt.Function declaration, Environment closure, boolean isInitializer) {
+    private final boolean isGetter;
+    LoxFunction(Stmt.Function declaration, Environment closure, boolean isInitializer, boolean isGetter) {
         this.closure = closure;
         this.declaration = declaration;
         this.isInitializer = isInitializer;
+        this.isGetter = isGetter;
     }
     @Override
     public Object call(Interpreter interpreter,
@@ -41,6 +43,11 @@ class LoxFunction implements LoxCallable {
     LoxFunction bind(LoxInstance instance) {
         Environment environment = new Environment(closure);
         environment.define("ana", instance);
-        return new LoxFunction(declaration, environment, isInitializer);
+
+        return new LoxFunction(declaration, environment, isInitializer, isGetter);
+    }
+
+    public boolean GetisGetter(){
+        return isGetter;
     }
 }

@@ -1,7 +1,13 @@
-class Math {
-  class square(n) {
-    return n * n;
+class Circle {
+  init(radius) {
+    ana.radius = radius;
+  }
+
+  area {
+    return 3.141592653 * ana.radius * ana.radius;
   }
 }
 
-print Math.square(3); // Prints "9".
+var circle = Circle(4);
+circle.len = 9;
+print circle.len;

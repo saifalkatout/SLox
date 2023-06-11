@@ -2,11 +2,14 @@ package SLox;
 import java.util.List;
 import java.util.Map;
 
-class LoxClass implements LoxCallable{
+class LoxClass extends LoxInstance implements LoxCallable {
     final String name;
+    final LoxClass superclass;
     private final Map<String, LoxFunction> methods;
-    LoxClass(String name, Map<String, LoxFunction> methods) {
+    LoxClass(String name, LoxClass superclass,Map<String, LoxFunction> methods) {
+        super(null);
         this.name = name;
+        this.superclass = superclass;
         this.methods = methods;
     }
     @Override
@@ -36,6 +39,9 @@ class LoxClass implements LoxCallable{
     LoxFunction findMethod(String name) {
         if (methods.containsKey(name)) {
             return methods.get(name);
+        }
+        if (superclass != null) {
+            return superclass.findMethod(name);
         }
 
         return null;

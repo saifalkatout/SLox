@@ -16,7 +16,7 @@ abstract class Expr {
     R visitSetExpr(Set expr);
     R visitAnaExpr(Ana expr);
     R visitLambdaExpr(Lambda expr);
-
+    R visitSuperExpr(Super expr);
     //R visitBreakExpr(Break expr);
   }
   abstract <R> R accept(Visitor<R> visitor);
@@ -194,6 +194,22 @@ abstract class Expr {
     final List<Token> params;
     final List<Stmt> body;
   }
+
+  static class Super extends Expr {
+    Super(Token keyword, Token method) {
+      this.keyword = keyword;
+      this.method = method;
+    }
+
+    @Override
+    <R> R accept(Visitor<R> visitor) {
+      return visitor.visitSuperExpr(this);
+    }
+
+    final Token keyword;
+    final Token method;
+  }
+
 
 //  static class Break extends Expr {
 //    @Override

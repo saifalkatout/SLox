@@ -1,5 +1,7 @@
-fun x(b){
-    return b;
+class Math {
+  class square(n) {
+    return n * n;
+  }
 }
 
-x(1);
+print Math.square(3); // Prints "9".

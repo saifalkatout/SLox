@@ -51,7 +51,7 @@ class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
             lox.error(expr.name,
                     "Can't read local variable in its own initializer.");
         }
-        visited.removeIf(obj -> Objects.equals(obj.lexeme, expr.name.lexeme));
+        visited.removeIf(obj -> Objects.equals(obj.lexeme, expr.name.lexeme));         //same var decl multiple blocks
         resolveLocal(expr, expr.name);
         return null;
     }

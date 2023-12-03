@@ -93,7 +93,7 @@ class  Interpreter implements Expr.Visitor<Object>,
     }
     @Override
     public Void visitVarStmt(Stmt.Var stmt) {
-        Object value = null;
+        Object value = UndefinedClass.Instance;
         if (stmt.initializer != null) {
             value = evaluate(stmt.initializer);
         }
@@ -172,7 +172,11 @@ class  Interpreter implements Expr.Visitor<Object>,
     }
     @Override
     public Object visitVariableExpr(Expr.Variable expr) {
-        return lookUpVariable(expr.name, expr);
+        Object O = lookUpVariable(expr.name, expr);
+        if (O instanceof UndefinedClass){
+            throw new RuntimeError(expr.name,"Variable is uninitialized " + expr.name.lexeme);
+        }
+        return O;
     }
     private boolean isTruthy(Object object) {
         if (object == null) return false;
@@ -244,8 +248,8 @@ class  Interpreter implements Expr.Visitor<Object>,
 
                 //CHALLENGE 2
                 if (left instanceof String || right instanceof String) {
-                    assert left instanceof String;
-                    return stringify(left )+ (String)right;
+                    //assert left instanceof String;
+                    return stringify(left )+ stringify(right);
                 }
 
 //                if (left instanceof String && right instanceof Double) {
